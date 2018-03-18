@@ -1,0 +1,6 @@
+apiVersion: "alpha.example.org/v1"
+kind: AU
+metadata:
+  name: test
+spec:
+  operation: "update"
