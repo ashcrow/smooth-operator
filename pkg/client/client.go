@@ -1,12 +1,12 @@
 package client
 
 import (
+	apiextensionsclient "k8s.io/apiextensions-apiserver/pkg/client/clientset/clientset"
 	"k8s.io/client-go/kubernetes"
-        "k8s.io/client-go/rest"
+	"k8s.io/client-go/rest"
 )
 
-
-func GetClient() (kubernetes.Interface, err) {
+func GetClient() (kubernetes.Interface, error) {
 	config, err := GetConfig()
 	if err != nil {
 		return nil, err
@@ -16,6 +16,14 @@ func GetClient() (kubernetes.Interface, err) {
 		return nil, err
 	}
 	return client, nil
+}
+
+func GetExtClient() apiextensionsclient.Interface {
+	cfg, err := GetConfig()
+	if err != nil {
+		panic(err)
+	}
+	return apiextensionsclient.NewForConfigOrDie(cfg)
 }
 
 func GetConfig() (*rest.Config, error) {
