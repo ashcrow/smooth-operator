@@ -6,6 +6,8 @@ import (
 
 	"github.com/ashcrow/smooth-operator/pkg/retryutil"
 	"k8s.io/api/core/v1"
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+	"k8s.io/client-go/kubernetes"
 )
 
 // atomicUpdatorVolumeMounts returns the mount structure for an AUContainer.
@@ -32,7 +34,9 @@ func AUContainer(command []string, repo, tag string) v1.Container {
 }
 
 // AUPod creates an Atomic Updator pod spec
-func AUPod(container v1.Container, labels []string) *v1.Pod {
+func AUPod(container v1.Container, labels map[string]string) *v1.Pod {
+	runAsNonRoot := true
+	id := int64(9000)
 	pod := &v1.Pod{
 		ObjectMeta: metav1.ObjectMeta{
 			Name:        "au",
@@ -47,9 +51,9 @@ func AUPod(container v1.Container, labels []string) *v1.Pod {
 			//			Hostname:                     "hostname",
 			//			Subdomain:                    clusterName,
 			SecurityContext: &v1.PodSecurityContext{
-				RunAsUser:    int64(9000),
-				RunAsNonRoot: true,
-				FSGroup:      int64(9000),
+				RunAsUser:    &id,
+				RunAsNonRoot: &runAsNonRoot,
+				FSGroup:      &id,
 			},
 		},
 	}
